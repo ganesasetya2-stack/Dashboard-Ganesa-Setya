@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DailyReportGS — Login</title>
+  <meta name="description" content="Login — DailyReportGS Private Workspace" />
+  <link rel="manifest" href="manifest.json">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body data-theme="light">
+  <div class="app" style="max-width:900px;margin:80px auto;align-items:center;justify-content:center;">
+    <main style="flex:1;width:100%;display:flex;align-items:center;justify-content:center;">
+      <div class="panel" style="width:520px;max-width:94%;padding:28px;border-radius:16px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <div style="width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#2f6f95,#90afc5);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:24px">G</div>
+          <div>
+            <h2 style="margin:0;font-family:Poppins,Inter">DailyReportGS</h2>
+            <div class="muted-xs">Private Workspace — Masuk dengan PIN</div>
+          </div>
+        </div>
+
+        <div id="loginForm" style="margin-top:18px">
+          <div class="muted-xs">Buat PIN baru (4-6 digit) jika pertama kali, atau masukkan PIN untuk masuk.</div>
+          <div style="margin-top:12px">
+            <input id="pinInput" class="input" inputmode="numeric" maxlength="6" placeholder="Masukkan PIN (4-6 digit)" />
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button id="createPinBtn" class="btn">Buat PIN</button>
+            <button id="loginBtn" class="btn ghost">Masuk</button>
+          </div>
+          <div style="margin-top:12px" id="loginMsg" class="muted-xs"></div>
+        </div>
+
+        <hr style="margin:18px 0;border:none;border-top:1px solid rgba(12,18,24,0.04)">
+
+        <div class="muted-xs">Versi: dailyreportgs — Minimalis Modern • Tema biru</div>
+      </div>
+    </main>
+  </div>
+
+<script type="module" src="login.js"></script>
+</body>
+</html>

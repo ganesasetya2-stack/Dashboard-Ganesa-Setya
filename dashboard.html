@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DailyReportGS — Dashboard</title>
+  <meta name="description" content="Ganesa Private Workspace — Dashboard" />
+  <link rel="manifest" href="manifest.json">
+  <style>
+    /* Reset dan variabel CSS */
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --danger-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #34495e;
+      --text-color: #2c3e50;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    [data-theme="dark"] {
+      --primary-color: #2980b9;
+      --secondary-color: #34495e;
+      --light-color: #2c3e50;
+      --dark-color: #ecf0f1;
+      --text-color: #ecf0f1;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--light-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      transition: var(--transition);
+    }
+
+    /* Layout */
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      grid-template-rows: 60px 1fr;
+      grid-template-areas: 
+        "sidebar header"
+        "sidebar main";
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      grid-area: header;
+      background-color: white;
+      box-shadow: var(--box-shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 100;
+    }
+
+    [data-theme="dark"] .header {
+      background-color: var(--dark-color);
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: var(--text-color);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      grid-area: sidebar;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .sidebar-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+    }
+
+    .nav-item {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-item.active {
+      background-color: var(--primary-color);
+    }
+
+    .sidebar-footer {
+      padding: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logout-btn {
+      width: 100%;
+      padding: 10px;
+      background-color: var(--danger-color);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .logout-btn:hover {
+      background-color: #c0392b;
+    }
+
+    /* Main Content */
+    .main-content {
+      grid-area: main;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .welcome-section {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--box-shadow);
+    }
+
+    [data-theme="dark"] .welcome-section {
+      background-color: var(--dark-color);
+    }
+
+    .welcome-title {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .welcome-subtitle {
+      color: #7f8c8d;
+      margin-bottom: 15px;
+    }
+
+    [data-theme="dark"] .welcome-subtitle {
+      color: #bdc3c7;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--box-shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    [data-theme="dark"] .stat-card {
+      background-color: var(--dark-color);
+    }
+
+    .stat-title {
+      font-size: 0.9rem;
+      color: #7f8c8d;
+      margin-bottom: 10px;
+    }
+
+    [data-theme="dark"] .stat-title {
+      color: #bdc3c7;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .stat-trend {
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .trend-up {
+      color: var(--success-color);
+    }
+
+    .trend-down {
+      color: var(--danger-color);
+    }
+
+    /* Recent Reports */
+    .reports-section {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--box-shadow);
+      margin-bottom: 20px;
+    }
+
+    [data-theme="dark"] .reports-section {
+      background-color: var(--dark-color);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+    }
+
+    .reports-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .reports-table th,
+    .reports-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    [data-theme="dark"] .reports-table th,
+    [data-theme="dark"] .reports-table td {
+      border-bottom: 1px solid #444;
+    }
+
+    .reports-table th {
+      font-weight: 600;
+      color: #7f8c8d;
+    }
+
+    [data-theme="dark"] .reports-table th {
+      color: #bdc3c7;
+    }
+
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-completed {
+      background-color: rgba(46, 204, 113, 0.2);
+      color: var(--success-color);
+    }
+
+    .status-pending {
+      background-color: rgba(243, 156, 18, 0.2);
+      color: var(--warning-color);
+    }
+
+    .status-overdue {
+      background-color: rgba(231, 76, 60, 0.2);
+      color: var(--danger-color);
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .action-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--box-shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    [data-theme="dark"] .action-card {
+      background-color: var(--dark-color);
+    }
+
+    .action-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .action-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: var(--primary-color);
+    }
+
+    .action-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dashboard-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: 60px auto 1fr;
+        grid-template-areas: 
+          "header"
+          "sidebar"
+          "main";
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .sidebar.mobile-open {
+        display: flex;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-color);
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <div class="dashboard-container">
+    <!-- Header -->
+    <header class="header">
+      <button class="menu-toggle">☰</button>
+      <h1 class="header-title">DailyReportGS</h1>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle">🌙</button>
+        <div class="user-info">
+          <div class="user-avatar">GS</div>
+          <span>Ganesa User</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2 class="sidebar-title">Ganesa Workspace</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-item active">
+          <span>📊</span>
+          <span>Dashboard</span>
+        </div>
+        <div class="nav-item">
+          <span>📝</span>
+          <span>Laporan Harian</span>
+        </div>
+        <div class="nav-item">
+          <span>📈</span>
+          <span>Analitik</span>
+        </div>
+        <div class="nav-item">
+          <span>👥</span>
+          <span>Tim</span>
+        </div>
+        <div class="nav-item">
+          <span>⚙️</span>
+          <span>Pengaturan</span>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="logoutToLogin()">
+          <span>🚪</span>
+          <span>Keluar</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Welcome Section -->
+      <section class="welcome-section">
+        <h2 class="welcome-title">Selamat Datang, Ganesa User!</h2>
+        <p class="welcome-subtitle">Berikut adalah ringkasan aktivitas dan laporan terbaru Anda.</p>
+      </section>
+
+      <!-- Stats Grid -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-title">Total Laporan</div>
+          <div class="stat-value">142</div>
+          <div class="stat-trend trend-up">
+            <span>↑</span>
+            <span>12% dari bulan lalu</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Laporan Hari Ini</div>
+          <div class="stat-value">8</div>
+          <div class="stat-trend trend-up">
+            <span>↑</span>
+            <span>2 lebih dari kemarin</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Tugas Selesai</div>
+          <div class="stat-value">89%</div>
+          <div class="stat-trend trend-up">
+            <span>↑</span>
+            <span>5% dari minggu lalu</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Kinerja Tim</div>
+          <div class="stat-value">92%</div>
+          <div class="stat-trend trend-down">
+            <span>↓</span>
+            <span>3% dari bulan lalu</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recent Reports -->
+      <section class="reports-section">
+        <div class="section-header">
+          <h3 class="section-title">Laporan Terbaru</h3>
+          <button class="btn">
+            <span>+</span>
+            <span>Laporan Baru</span>
+          </button>
+        </div>
+        <table class="reports-table">
+          <thead>
+            <tr>
+              <th>Judul Laporan</th>
+              <th>Tanggal</th>
+              <th>Status</th>
+              <th>Penulis</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Laporan Proyek Q3 2023</td>
+              <td>15 Nov 2023</td>
+              <td><span class="status-badge status-completed">Selesai</span></td>
+              <td>Andi Wijaya</td>
+            </tr>
+            <tr>
+              <td>Analisis Performa Sistem</td>
+              <td>14 Nov 2023</td>
+              <td><span class="status-badge status-completed">Selesai</span></td>
+              <td>Budi Santoso</td>
+            </tr>
+            <tr>
+              <td>Evaluasi Tim Pengembangan</td>
+              <td>13 Nov 2023</td>
+              <td><span class="status-badge status-pending">Menunggu</span></td>
+              <td>Citra Lestari</td>
+            </tr>
+            <tr>
+              <td>Laporan Keuangan Bulanan</td>
+              <td>12 Nov 2023</td>
+              <td><span class="status-badge status-overdue">Terlambat</span></td>
+              <td>Dian Pratama</td>
+            </tr>
+            <tr>
+              <td>Review Produk Baru</td>
+              <td>10 Nov 2023</td>
+              <td><span class="status-badge status-completed">Selesai</span></td>
+              <td>Eko Sulistyo</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Quick Actions -->
+      <section class="reports-section">
+        <div class="section-header">
+          <h3 class="section-title">Aksi Cepat</h3>
+        </div>
+        <div class="quick-actions">
+          <div class="action-card">
+            <div class="action-icon">📝</div>
+            <div class="action-title">Buat Laporan</div>
+            <div class="action-desc">Buat laporan harian baru</div>
+          </div>
+          <div class="action-card">
+            <div class="action-icon">📊</div>
+            <div class="action-title">Lihat Analitik</div>
+            <div class="action-desc">Analisis data performa</div>
+          </div>
+          <div class="action-card">
+            <div class="action-icon">👥</div>
+            <div class="action-title">Kelola Tim</div>
+            <div class="action-desc">Atur anggota tim</div>
+          </div>
+          <div class="action-card">
+            <div class="action-icon">📁</div>
+            <div class="action-title">Ekspor Data</div>
+            <div class="action-desc">Ekspor laporan ke Excel</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Toggle tema
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      body.setAttribute('data-theme', newTheme);
+      themeToggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
+    });
+
+    // Toggle menu mobile
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('mobile-open');
+    });
+
+    // Logout function
+    window.logoutToLogin = function(){
+      localStorage.removeItem('ganesa_logged_in');
+      location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
